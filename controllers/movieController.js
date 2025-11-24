@@ -33,12 +33,15 @@ exports.getRecentMovies = async (req, res) => {
 // Get single movie by ID
 exports.getMovieById = async (req, res) => {
     try {
+        console.log('Fetching movie with ID:', req.params.id);
         const movie = await Movie.findById(req.params.id);
+        console.log('Movie found:', movie);
         if (!movie) {
             return res.status(404).json({ message: 'Movie not found' });
         }
         res.json(movie);
     } catch (error) {
+        console.error('Error in getMovieById:', error);
         res.status(500).json({ message: 'Error fetching movie', error: error.message });
     }
 };
