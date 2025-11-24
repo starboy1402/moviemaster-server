@@ -34,7 +34,15 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/moviemast
 
 // Routes
 app.get('/', (req, res) => {
-    res.json({ message: 'MovieMaster Pro API is running!' });
+    res.json({ 
+        message: 'MovieMaster Pro API is running!',
+        version: '1.0.0',
+        endpoints: {
+            movies: '/api/movies',
+            topRated: '/api/movies/top-rated',
+            recent: '/api/movies/recent'
+        }
+    });
 });
 
 app.use('/api/movies', movieRoutes);
