@@ -3,7 +3,25 @@ const Movie = require('../models/Movie');
 // Get all movies
 exports.getAllMovies = async (req, res) => {
     try {
-        const movies = await Movie.find().sort({ createdAt: -1 });
+        const { genres, minRating, maxRating } = req.query;
+        const filter = {};
+
+        // Filter by multiple genres using $in operator
+        if (genres) {
+            const genreList = genres.split(',').map(g => g.trim());
+            if (genreList.length > 0) {
+                filter.genre = { $in: genreList };
+            }
+        }
+
+        // Filter by rating range using $gte and $lte operators
+        if (minRating || maxRating) {
+            filter.rating = {};
+            if (minRating) filter.rating.$gte = parseFloat(minRating);
+            if (maxRating) filter.rating.$lte = parseFloat(maxRating);
+        }
+
+        const movies = await Movie.find(filter).sort({ createdAt: -1 });
         res.json(movies);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching movies', error: error.message });
